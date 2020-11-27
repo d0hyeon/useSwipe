@@ -1,0 +1,41 @@
+{
+  "name": "@odnh/useSwipe",
+  "version": "0.0.1",
+  "description": "react hook useSwipe",
+  "keywords": [
+    "react",
+    "react hook",
+    "swipe",
+    "use swipe"
+  ],
+  "main": "dist/index.js",
+  "license": "MIT",
+  "private": false,
+  "module": "dist/index.es.js",
+  "dependencies": {
+    "lodash": "^4.17.20",
+    "react-is": "^17.0.1",
+    "scroll-lock": "^2.1.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-node-resolve": "^10.0.0",
+    "@types/react": "^16.9.15",
+    "react": "^17.0.1",
+    "rollup": "^2.33.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-styles": "^3.11.0",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "typescript": "^3.9.6"
+  },
+  "scripts": {
+    "build": "rollup -c"
+  }
+}
