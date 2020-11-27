@@ -61,7 +61,7 @@ describe('getEventNameByDevice 함수 테스트', () => {
         end: 'mouseup'
       }
     ]
-  ])('접속 디바이스가 모바일이 %s라면 %j을 반환한다.', (device, expected) => {
+  ])('접속 디바이스가 %s라면 %j을 반환한다.', (device, expected) => {
     expect(getEventNameByDevice(device === 'mobile')).toStrictEqual(expected)
   });
 })
