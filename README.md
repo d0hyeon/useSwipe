@@ -10,7 +10,7 @@ React Custom Hook useSwipe
 
 |Name|Type|Description|
 |-----|-----------|---------------|
-|target|`HTMLElement` or `React.MutableRefObject<HTMLElement>`|swipe element|
+|target|`HTMLElement` or `React.MutableRefObject<HTMLElement>`|target element|
 |option|`Object`|[Options](https://github.com/d0hyeon/useSwipe/blob/master/src/type.ts#L7)|
 |swipeState|`Object`| position `x`, `y` and state (`done` or `move`)|
 
