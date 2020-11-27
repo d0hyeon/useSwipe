@@ -37,8 +37,6 @@ const useSwipe: UseSwipe = (target, options) => {
 
   const onTouchMove = React.useCallback(event => {
     if(blocking) return;
-    event.preventDefault();
-    event.stopPropagation();
     const {targetTouches, clientX, clientY} = event;
     const x = targetTouches?.[0]?.screenX ?? clientX;
     const y = targetTouches?.[0]?.screenY ?? clientY;
@@ -53,8 +51,6 @@ const useSwipe: UseSwipe = (target, options) => {
   const throttledOnTouchMove = React.useMemo(() => throttle(onTouchMove, ms), [onTouchMove, ms]);
 
   const onTouchStart = React.useCallback(event => {
-    event.preventDefault();
-    event.stopPropagation();
     const { targetTouches, clientX, clientY, target } = event;
     const x = targetTouches?.[0]?.screenX ?? clientX;
     const y = targetTouches?.[0]?.screenY ?? clientY;
