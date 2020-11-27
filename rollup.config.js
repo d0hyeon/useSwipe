@@ -3,6 +3,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import external from 'rollup-plugin-peer-deps-external';
 import babel from '@rollup/plugin-babel';
+import { terser } from "rollup-plugin-terser";
 import pkg from './package.json';
 
 export default {
@@ -30,6 +31,7 @@ export default {
       include: ['node_modules/**'],
     }),
     babel({ babelHelpers: 'bundled' }),
-    typescript()
+    typescript(),
+    terser()
   ]
 }
