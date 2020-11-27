@@ -22,8 +22,8 @@ export const getIsMobile: GetIsMobile = () => {
 type getAbsolutePositionFunc = (element: HTMLElement) => (position: 'x' | 'y') => number;
 export const getAbsolutePositionFunc: getAbsolutePositionFunc = (element) => (position) => {
   return (
-    window[`scroll${position.toUpperCase()}`] +
-    element.getBoundingClientRect()[position]
+    (window[`scroll${position.toUpperCase()}`] ?? 0) +
+    (element.getBoundingClientRect()[position] ?? 0)
   );
 };
 
