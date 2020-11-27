@@ -38,6 +38,7 @@ const useSwipe: UseSwipe = (target, options) => {
   const onTouchMove = React.useCallback(event => {
     if(blocking) return;
     event.preventDefault();
+    event.stopPropagation();
     const {targetTouches, clientX, clientY} = event;
     const x = targetTouches?.[0]?.screenX ?? clientX;
     const y = targetTouches?.[0]?.screenY ?? clientY;
@@ -53,6 +54,7 @@ const useSwipe: UseSwipe = (target, options) => {
 
   const onTouchStart = React.useCallback(event => {
     event.preventDefault();
+    event.stopPropagation();
     const { targetTouches, clientX, clientY, target } = event;
     const x = targetTouches?.[0]?.screenX ?? clientX;
     const y = targetTouches?.[0]?.screenY ?? clientY;
@@ -104,7 +106,7 @@ const useSwipe: UseSwipe = (target, options) => {
     startPositionRef.current = [y, x];
     disablePageScroll(document.body);
     blocking = false;
-    element.addEventListener(deviceEventNames['move'], throttledOnTouchMove);
+    element.addEventListener(deviceEventNames['move'], throttledOnTouchMove, true);
   }, [...effectDependencies, throttledOnTouchMove]);
   const throttledOnTouchStart = React.useMemo(() => throttle(onTouchStart, ms), [onTouchStart, ms]);
   
@@ -131,7 +133,7 @@ const useSwipe: UseSwipe = (target, options) => {
 
   React.useEffect(() => {
     if (element) {
-      element.addEventListener(deviceEventNames['start'], throttledOnTouchStart);
+      element.addEventListener(deviceEventNames['start'], throttledOnTouchStart, true);
       element.addEventListener(deviceEventNames['end'], onTouchEnd);
       if(!isMobile) {
         element.addEventListener('mouseleave', onTouchEnd);
