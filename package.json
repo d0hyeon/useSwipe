@@ -9,9 +9,20 @@
     "use swipe"
   ],
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "license": "MIT",
   "private": false,
-  "module": "dist/index.es.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d0hyeon/useSwipe"
+  },
+  "bugs": {
+    "email": "ehgus6887@gmail.com"
+  },
+  "author": {
+    "name": "김도현",
+    "email": "ehgus6887@gmail.com"
+  },
   "dependencies": {
     "lodash": "^4.17.20",
     "react-is": "^17.0.1",
