@@ -18,7 +18,7 @@ React Custom Hook useSwipe
 
 **Example**
 ```jsx
-import useSwipe from '@odnh/useSwipe';
+import useSwipe from '@odnh/use-swipe';
 
 const App = () => {
   const elementRef = React.useRef(null);
