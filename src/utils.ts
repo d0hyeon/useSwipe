@@ -11,7 +11,7 @@ const DEVICE_EVENT_NAMES = {
   }
 }
 
-type GetIsMobile = () => boolean | string;
+type GetIsMobile = () => boolean;
 export const getIsMobile: GetIsMobile = () => {
   if(!(process as any).browser) {
     return false;
