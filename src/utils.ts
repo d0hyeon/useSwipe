@@ -11,7 +11,7 @@ const DEVICE_EVENT_NAMES = {
   }
 }
 
-type GetIsMobile = () => boolean;
+type GetIsMobile = () => boolean | string;
 export const getIsMobile: GetIsMobile = () => {
   if(!(process as any).browser) {
     return false;
@@ -22,8 +22,8 @@ export const getIsMobile: GetIsMobile = () => {
 type getAbsolutePositionFunc = (element: HTMLElement) => (position: 'x' | 'y') => number;
 export const getAbsolutePositionFunc: getAbsolutePositionFunc = (element) => (position) => {
   return (
-    window[`scroll${position.toUpperCase()}`] +
-    element.getBoundingClientRect()[position]
+    (window[`scroll${position.toUpperCase()}`] ?? 0) +
+    (element.getBoundingClientRect()[position] ?? 0)
   );
 };
 
