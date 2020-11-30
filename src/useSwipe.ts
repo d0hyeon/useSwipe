@@ -101,7 +101,7 @@ const useSwipe: UseSwipe = (target, options) => {
     startPositionRef.current = [y, x];
     disablePageScroll(document.body);
     blocking = false;
-    targetRef.current.addEventListener(deviceEventNames['move'], throttledOnTouchMove, true);
+    targetRef.current.addEventListener(deviceEventNames['move'], throttledOnTouchMove, {passive: true});
   }, [...effectDependencies, throttledOnTouchMove]);
   const throttledOnTouchStart = React.useMemo(() => throttle(onTouchStart, ms), [onTouchStart, ms]);
   
@@ -128,10 +128,10 @@ const useSwipe: UseSwipe = (target, options) => {
 
   React.useEffect(() => {
     if (targetRef.current) {
-      targetRef.current.addEventListener(deviceEventNames['start'], throttledOnTouchStart, true);
-      targetRef.current.addEventListener(deviceEventNames['end'], onTouchEnd);
+      targetRef.current.addEventListener(deviceEventNames['start'], throttledOnTouchStart, {passive: true});
+      targetRef.current.addEventListener(deviceEventNames['end'], onTouchEnd, {passive: true});
       if(!isMobile) {
-        targetRef.current.addEventListener('mouseleave', onTouchEnd);
+        targetRef.current.addEventListener('mouseleave', onTouchEnd, {passive: true});
       }
 
       return () => removeEventListenerBundle();
