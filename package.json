@@ -1,6 +1,6 @@
 {
   "name": "@odnh/use-swipe",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "react hook useSwipe",
   "keywords": [
     "react",
