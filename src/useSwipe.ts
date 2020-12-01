@@ -132,7 +132,7 @@ const useSwipe: UseSwipe = (target, options) => {
       targetRef.current.removeEventListener(deviceEventNames['start'], throttledOnTouchStart);
       targetRef.current.removeEventListener(deviceEventNames['move'], throttledOnTouchMove);
       targetRef.current.removeEventListener(deviceEventNames['end'], onTouchEnd);
-      document.removeEventListener('mouseleave', onMouseLeave)
+      document.body.removeEventListener('mouseleave', onMouseLeave)
     }
   }, [...effectDependencies, throttledOnTouchStart, throttledOnTouchMove, onTouchEnd, isMobile]);
 
@@ -141,7 +141,7 @@ const useSwipe: UseSwipe = (target, options) => {
       targetRef.current.addEventListener(deviceEventNames['start'], throttledOnTouchStart, {passive: true});
       targetRef.current.addEventListener(deviceEventNames['end'], onTouchEnd, {passive: true});
       if(!isMobile) {
-        document.addEventListener('mouseleave', onMouseLeave)
+        document.body.addEventListener('mouseleave', onMouseLeave)
       }
       return () => removeEventListenerBundle();
     }
