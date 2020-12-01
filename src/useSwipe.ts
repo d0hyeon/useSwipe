@@ -119,9 +119,6 @@ const useSwipe: UseSwipe = (target, options) => {
       targetRef.current.removeEventListener(deviceEventNames['start'], throttledOnTouchStart);
       targetRef.current.removeEventListener(deviceEventNames['move'], throttledOnTouchMove);
       targetRef.current.removeEventListener(deviceEventNames['end'], onTouchEnd);
-      if(!isMobile) {
-        targetRef.current.removeEventListener('mouseleave', onTouchEnd);
-      }
     }
     enablePageScroll(document.body);
   }, [...effectDependencies, throttledOnTouchStart, throttledOnTouchMove, onTouchEnd, isMobile]);
@@ -130,9 +127,6 @@ const useSwipe: UseSwipe = (target, options) => {
     if (targetRef.current) {
       targetRef.current.addEventListener(deviceEventNames['start'], throttledOnTouchStart, {passive: true});
       targetRef.current.addEventListener(deviceEventNames['end'], onTouchEnd, {passive: true});
-      if(!isMobile) {
-        targetRef.current.addEventListener('mouseleave', onTouchEnd, {passive: true});
-      }
 
       return () => removeEventListenerBundle();
     }
