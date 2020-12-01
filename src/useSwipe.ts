@@ -1,10 +1,7 @@
 import * as React from 'react';
 import throttle from 'lodash/throttle';
-import scrollLock from 'scroll-lock';
 import { SwipeState, UseSwipe } from './type';
 import { getAbsolutePositionFunc, getEventNameByDevice, getIsMobile } from './utils';
-
-const { enablePageScroll, disablePageScroll } = scrollLock;
 
 const INITIAL_STATE: SwipeState = {
   x: 0,
@@ -99,7 +96,6 @@ const useSwipe: UseSwipe = (target, options) => {
     }
 
     startPositionRef.current = [y, x];
-    disablePageScroll(document.body);
     blocking = false;
     targetRef.current.addEventListener(deviceEventNames['move'], throttledOnTouchMove, {passive: true});
   }, [...effectDependencies, throttledOnTouchMove]);
@@ -109,7 +105,6 @@ const useSwipe: UseSwipe = (target, options) => {
     blocking = true;
     startPositionRef.current = [0, 0];
     setSwipeState(INITIAL_STATE);
-    enablePageScroll(document.body);
      
     targetRef.current.removeEventListener(deviceEventNames['move'], throttledOnTouchMove);
   }, [...effectDependencies, throttledOnTouchStart, throttledOnTouchMove]);
@@ -120,7 +115,6 @@ const useSwipe: UseSwipe = (target, options) => {
       targetRef.current.removeEventListener(deviceEventNames['move'], throttledOnTouchMove);
       targetRef.current.removeEventListener(deviceEventNames['end'], onTouchEnd);
     }
-    enablePageScroll(document.body);
   }, [...effectDependencies, throttledOnTouchStart, throttledOnTouchMove, onTouchEnd, isMobile]);
 
   React.useEffect(() => {
