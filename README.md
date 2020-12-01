@@ -40,7 +40,7 @@ npm install @odnh/use-swipe
 
 ## Example
 
-[demo](https://codesandbox.io/s/useswipe-k5yub?file=/src/App.js)
+[demo](https://k5yub.csb.app/)
 
 ```jsx
 import React from 'react';
