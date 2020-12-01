@@ -16,7 +16,6 @@ const useSwipe: UseSwipe = (target, options) => {
   const isMobile = getIsMobile();
   let touchMoveBlocking = false; 
 
-
   const [swipeState, setSwipeState] = React.useState<SwipeState>(INITIAL_STATE);
   const startPositionRef = React.useRef([0, 0]);
   const targetRef = React.useRef(null);
@@ -27,11 +26,10 @@ const useSwipe: UseSwipe = (target, options) => {
     ...(scope?.x ?? []),
     ...(scope?.y ?? []),
   ];
-  
+  const resetState = React.useCallback(() => setSwipeState(INITIAL_STATE), []);
   const deviceEventNames = React.useMemo(() => {
     return getEventNameByDevice(isMobile);
   }, [isMobile]);
-
   const addEventListenersForBlock = React.useCallback((events: string[]) => {
     events.forEach((eventType) => {
       targetRef.current.addEventListener(eventType, preventDefault);
@@ -117,7 +115,7 @@ const useSwipe: UseSwipe = (target, options) => {
   const onTouchEnd = React.useCallback(() => {
     touchMoveBlocking = true;
     startPositionRef.current = [0, 0];
-    setSwipeState(INITIAL_STATE);
+    resetState();
     targetRef.current.removeEventListener(deviceEventNames['move'], throttledOnTouchMove);
     setTimeout(() => {
       removeEventListenersForBlock(['click', 'dragstart']);
@@ -129,6 +127,7 @@ const useSwipe: UseSwipe = (target, options) => {
       targetRef.current.removeEventListener(deviceEventNames['start'], throttledOnTouchStart);
       targetRef.current.removeEventListener(deviceEventNames['move'], throttledOnTouchMove);
       targetRef.current.removeEventListener(deviceEventNames['end'], onTouchEnd);
+      document.removeEventListener('mouseleave', resetState)
     }
   }, [...effectDependencies, throttledOnTouchStart, throttledOnTouchMove, onTouchEnd, isMobile]);
 
@@ -136,7 +135,9 @@ const useSwipe: UseSwipe = (target, options) => {
     if (targetRef.current) {
       targetRef.current.addEventListener(deviceEventNames['start'], throttledOnTouchStart, {passive: true});
       targetRef.current.addEventListener(deviceEventNames['end'], onTouchEnd, {passive: true});
-
+      if(!isMobile) {
+        document.addEventListener('mouseleave', resetState)
+      }
       return () => removeEventListenerBundle();
     }
   }, [...effectDependencies, throttledOnTouchStart, onTouchEnd, removeEventListenerBundle, isMobile]);
