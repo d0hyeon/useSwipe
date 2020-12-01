@@ -101,7 +101,11 @@ describe("useSwipe 옵션추가 테스트", () => {
     y: [100, 200]
   };
 
-  it('start포지션이 options에서 지정한 scope에 벗어난다면 이벤트를 차단한다.', () => {
+  it.each([
+    ['x', scope.x],
+    ['y', scope.y]
+  ])('start포지션이 options에서 지정한 $position의 값에 벗어난다면 이벤트를 차단한다', (position, range) => {
+    const scope = {[position]: range};
     const wrapper = mount(<MockComponent options={{scope} as UseSwipeOption}/>);
     mockElement.dispatchEvent(new MouseEvent('mousedown', {clientY: 150,  clientX: 1}));
     mockElement.dispatchEvent(new MouseEvent('mousemove', {clientY: 150, clientX: 1}));
@@ -113,26 +117,56 @@ describe("useSwipe 옵션추가 테스트", () => {
     wrapper.unmount();
   });
 
-  it("[모바일] start포지션이 options에서 지정한 scope에 벗어난다면 이벤트를 차단한다.", () => {
+  const defaultTouch = {
+    screenY: 0, 
+    screenX: 0,
+    clientX: 0,
+    clientY: 0,
+    identifier: 1,
+    rotationAngle: 0,
+    force: 0,
+    azimuthAngle: 0,
+    altitudeAngle: 0,
+    pageX: 0,
+    pageY: 0,
+    radiusX: 0,
+    radiusY: 0,
+    target: mockElement,
+    touchType: 'direct'
+  };
+  const defaultTouchEvent = {
+    cancelable: true,
+    bubbles: true,
+    composed: true,
+  }
+
+  it.each([
+    ['x', scope.x],
+    ['y', scope.y]
+  ])('[모바일] start포지션이 options에서 지정한 $position의 값에 벗어난다면 이벤트를 차단한다', (position, range) => {
+    Object.defineProperties(mockElement, {
+      'scrollY': {value: 0},
+      'scrillX': {value: 0}
+    })
     Object.defineProperty(window.navigator, 'userAgent', {
       value: 'iPhone',
-      writable: true
+      writable: false
     });
-    Object.defineProperties(mockElement, {
-      'scrollY': {value: -1},
-      'scrillX': {value: -1}
-    })
-
+    
+    const scope = {[position]: range};
     const wrapper = mount(<MockComponent options={{scope} as UseSwipeOption}/>);
-    //@ts-ignore
-    mockElement.dispatchEvent(new TouchEvent('mousedown', {targetTouches: [{screenY: 50, screenX: 50}]}));
-    //@ts-ignore
-    mockElement.dispatchEvent(new MouseEvent('mousemove', {targetTouches: [{screenY: 150, screenX: 150}]}));
+    mockElement.dispatchEvent(new TouchEvent('touchstart', {
+      ...defaultTouchEvent,
+      touches: [{...defaultTouch, clientX: 1000, clientY: 1000} as Touch],
+    }));
+    mockElement.dispatchEvent(new TouchEvent('touchmove', {
+      ...defaultTouchEvent,
+      touches: [{...defaultTouch, clientX: 150, clientY: 150} as Touch]
+    }));
 
     expect(wrapper.find('.state').text()).toBe('done');
     expect(wrapper.find('.x').text()).toBe('0');
     expect(wrapper.find('.y').text()).toBe('0');
-
     wrapper.unmount();
-  })
+  });
 });
