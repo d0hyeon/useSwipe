@@ -38,3 +38,7 @@ export const getEventNameByDevice: GetEventNameByDevice = (isMobile) => {
   return DEVICE_EVENT_NAMES[isMobile ? 'mobile' : 'desktop'];
 }
 
+type PreventDefault = (event: Event) => void;
+export const preventDefault:PreventDefault = event => {
+  event.preventDefault();
+}
