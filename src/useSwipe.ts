@@ -30,12 +30,12 @@ const useSwipe: UseSwipe = (target, options) => {
   const deviceEventNames = React.useMemo(() => {
     return getEventNameByDevice(isMobile);
   }, [isMobile]);
-  const addEventListenersForBlock = React.useCallback((events: string[]) => {
+  const addBlockingEvents = React.useCallback((events: string[]) => {
     events.forEach((eventType) => {
       targetRef.current.addEventListener(eventType, preventDefault);
     })
   }, [targetRef]);
-  const removeEventListenersForBlock = React.useCallback((events: string[]) => {
+  const removeBlockingEvents = React.useCallback((events: string[]) => {
     events.forEach((eventType) => {
       targetRef.current.removeEventListener(eventType, preventDefault);
     })
@@ -48,7 +48,7 @@ const useSwipe: UseSwipe = (target, options) => {
     const y = targetTouches?.[0]?.screenY ?? clientY;
     const [startY, startX] = startPositionRef.current;
     
-    addEventListenersForBlock(['click', 'dragstart']);
+    addBlockingEvents(['click', 'dragstart']);
     setSwipeState({
       x: x - startX,
       y: y - startY,
@@ -118,7 +118,7 @@ const useSwipe: UseSwipe = (target, options) => {
     setSwipeState(INITIAL_STATE);
     targetRef.current.removeEventListener(deviceEventNames['move'], throttledOnTouchMove);
     setTimeout(() => {
-      removeEventListenersForBlock(['click', 'dragstart']);
+      removeBlockingEvents(['click', 'dragstart']);
     }, 0)
   }, [...effectDependencies, throttledOnTouchStart, throttledOnTouchMove]);
 
