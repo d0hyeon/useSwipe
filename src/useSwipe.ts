@@ -43,7 +43,7 @@ const useSwipe: UseSwipe = (target, options) => {
   }, [targetRef]);
   
   
-  const onTouchStart = React.useCallback((event: Events) => {
+  const swipeStartHandler = React.useCallback((event: Events) => {
     let { clientX, clientY, target } = event as MouseEvent;
     const isTouched = !!(event as TouchEvent).targetTouches;
 
@@ -100,9 +100,9 @@ const useSwipe: UseSwipe = (target, options) => {
     startPositionRef.current = [clientY, clientX];
     variablesRef.current.touchMoveBlocking = false;
   }, effectDependencies);
-  const throttledOnTouchStart = React.useMemo(() => throttle(onTouchStart, ms), [onTouchStart, ms]);
+  const throttledSwipeStartHandler = React.useMemo(() => throttle(swipeStartHandler, ms), [swipeStartHandler, ms]);
 
-  const onTouchMove = React.useCallback((event: Events) => {
+  const swipeMoveHandler = React.useCallback((event: Events) => {
     if(variablesRef.current.touchMoveBlocking) return;
     let { clientX, clientY, } = event as MouseEvent;
     const isTouched = !!(event as TouchEvent).targetTouches;
@@ -121,9 +121,9 @@ const useSwipe: UseSwipe = (target, options) => {
       state: 'move'
     });
   }, effectDependencies);
-  const throttledOnTouchMove = React.useMemo(() => throttle(onTouchMove, ms), [onTouchMove, ms]);
+  const throttledSwipeMoveHandler = React.useMemo(() => throttle(swipeMoveHandler, ms), [swipeMoveHandler, ms]);
   
-  const onTouchEnd = React.useCallback(() => {
+  const swipeEndHandler = React.useCallback(() => {
     variablesRef.current.touchMoveBlocking = true;
     startPositionRef.current = [0, 0];
     setSwipeState(INITIAL_STATE);
@@ -132,29 +132,29 @@ const useSwipe: UseSwipe = (target, options) => {
     }, 0)
   }, effectDependencies);
 
-  const onMouseLeave = React.useCallback(() => {
+  const mouseLeaveHandler = React.useCallback(() => {
     setSwipeState(INITIAL_STATE);
-    onTouchEnd();
-  }, [targetRef, onTouchEnd])
+    swipeEndHandler();
+  }, [targetRef, swipeEndHandler])
 
   React.useEffect(() => {
     if (targetRef.current) {
-      targetRef.current.addEventListener(eventMapOfDevice['start'], throttledOnTouchStart, {passive: true});
-      targetRef.current.addEventListener(eventMapOfDevice['move'], throttledOnTouchMove, {passive: true});
-      targetRef.current.addEventListener(eventMapOfDevice['end'], onTouchEnd, {passive: true});
+      targetRef.current.addEventListener(eventMapOfDevice['start'], throttledSwipeStartHandler, {passive: true});
+      targetRef.current.addEventListener(eventMapOfDevice['move'], throttledSwipeMoveHandler, {passive: true});
+      targetRef.current.addEventListener(eventMapOfDevice['end'], swipeEndHandler, {passive: true});
       if(!isMobile) {
-        document.body.addEventListener('mouseleave', onMouseLeave)
+        document.body.addEventListener('mouseleave', mouseLeaveHandler)
       }
       return () => {
-        targetRef.current.removeEventListener(eventMapOfDevice['start'], throttledOnTouchStart);
-        targetRef.current.removeEventListener(eventMapOfDevice['move'], throttledOnTouchMove);
-        targetRef.current.removeEventListener(eventMapOfDevice['end'], onTouchEnd);
+        targetRef.current.removeEventListener(eventMapOfDevice['start'], throttledSwipeStartHandler);
+        targetRef.current.removeEventListener(eventMapOfDevice['move'], throttledSwipeMoveHandler);
+        targetRef.current.removeEventListener(eventMapOfDevice['end'], swipeEndHandler);
         if(!isMobile) {
-          document.body.removeEventListener('mouseleave', onMouseLeave);
+          document.body.removeEventListener('mouseleave', mouseLeaveHandler);
         }
       };
     }
-  }, [targetRef, throttledOnTouchStart, throttledOnTouchMove, onTouchEnd, onMouseLeave, eventMapOfDevice]);
+  }, [targetRef, throttledSwipeStartHandler, throttledSwipeMoveHandler, swipeEndHandler, mouseLeaveHandler, eventMapOfDevice]);
 
   React.useLayoutEffect(() => {
     targetRef.current =
