@@ -19,7 +19,7 @@ const useSwipe: UseSwipe = (target, options) => {
   const [swipeState, setSwipeState] = React.useState<SwipeState>(INITIAL_STATE);
   const startPositionRef = React.useRef([0, 0]);
   const targetRef = React.useRef(null);
-  const variablesRef = React.useRef({touchMoveBlocking: false});
+  const variablesRef = React.useRef({touchMoveBlocking: true});
   const isMobile = React.useMemo(() => getIsMobile(), []);
   const eventMapOfDevice = React.useMemo(() => getEventNameByDevice(isMobile), [isMobile]);
  
