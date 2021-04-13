@@ -9,19 +9,19 @@ const INITIAL_STATE: SwipeState = {
   state: 'done'
 };
 
-
 const useSwipe: UseSwipe = (target, options) => {
   const { scope = {}, fps = 60, ignoreElement } = options || {};
-  const ms = 1000 / fps;
-  const isMobile = getIsMobile();
-  let touchMoveBlocking = false; 
+  const ms = 1000 / fps; 
 
   const [swipeState, setSwipeState] = React.useState<SwipeState>(INITIAL_STATE);
   const startPositionRef = React.useRef([0, 0]);
   const targetRef = React.useRef(null);
+  const variablesRef = React.useRef({touchMoveBlocking: false});
+  const isMobile = React.useMemo(() => getIsMobile(), []);
  
   const effectDependencies = [
     targetRef,
+    variablesRef,
     ignoreElement,
     ...(scope?.x ?? []),
     ...(scope?.y ?? []),
@@ -42,7 +42,7 @@ const useSwipe: UseSwipe = (target, options) => {
   }, [targetRef]);
   
   const onTouchMove = React.useCallback(event => {
-    if(touchMoveBlocking) return;
+    if(variablesRef.current.touchMoveBlocking) return;
     const {targetTouches, clientX, clientY} = event;
     const x = targetTouches?.[0]?.screenX ?? clientX;
     const y = targetTouches?.[0]?.screenY ?? clientY;
@@ -107,12 +107,12 @@ const useSwipe: UseSwipe = (target, options) => {
     }
 
     startPositionRef.current = [y, x];
-    touchMoveBlocking = false;
+    variablesRef.current.touchMoveBlocking = false;
   }, effectDependencies);
   const throttledOnTouchStart = React.useMemo(() => throttle(onTouchStart, ms), [onTouchStart, ms]);
   
   const onTouchEnd = React.useCallback(() => {
-    touchMoveBlocking = true;
+    variablesRef.current.touchMoveBlocking = true;
     startPositionRef.current = [0, 0];
     setSwipeState(INITIAL_STATE);
     setTimeout(() => {
