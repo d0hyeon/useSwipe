@@ -2,6 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
+import external from 'rollup-plugin-peer-deps-external';
 import { terser } from "rollup-plugin-terser";
 import pkg from './package.json';
 
@@ -27,7 +28,8 @@ export default {
       include: ['node_modules/**'],
     }),
     babel({ babelHelpers: 'bundled' }),
-    typescript(),
-    terser()
+    typescript({ declaration: true }),
+    terser(),
+    external()
   ]
 }
