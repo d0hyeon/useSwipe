@@ -1,15 +1,4 @@
-const DEVICE_EVENT_NAMES = {
-  mobile: {
-    start: 'touchstart',
-    move: 'touchmove',
-    end: 'touchend'
-  },
-  desktop: {
-    start: 'mousedown',
-    move: 'mousemove',
-    end: 'mouseup'
-  }
-}
+import { DeviceEventType, MobileEventEnum, DesktopEventEnum } from './type';
 
 type GetIsMobile = () => boolean;
 export const getIsMobile: GetIsMobile = () => {
@@ -28,15 +17,21 @@ export const getAbsolutePositionFunc: getAbsolutePositionFunc = (element) => (po
 };
 
 
-type GetEventNameByDevice = (isMobile: boolean) => {
-  start: 'string';
-  move: 'string';
-  end: 'string';
-};
-// @ts-ignore
+type GetEventNameByDevice = (isMobile: boolean) => DeviceEventType;
 export const getEventNameByDevice: GetEventNameByDevice = (isMobile) => {
-  return DEVICE_EVENT_NAMES[isMobile ? 'mobile' : 'desktop'];
-}
+  if (isMobile) {
+    return {
+      START: MobileEventEnum.START,
+      MOVE: MobileEventEnum.MOVE,
+      END: MobileEventEnum.END,
+    };
+  }
+  return {
+    START: DesktopEventEnum.START,
+    MOVE: DesktopEventEnum.MOVE,
+    END: DesktopEventEnum.END,
+  };
+};
 
 type PreventDefault = (event: Event) => void;
 export const preventDefault:PreventDefault = event => {
