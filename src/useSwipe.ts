@@ -27,14 +27,13 @@ const useSwipe: UseSwipe = (target, options) => {
     () => getEventNameByDevice(isMobile),
     [isMobile],
   );
-
-  const effectDependencies = [
-    targetRef,
+    
+  const commonEffectDependencies = React.useMemo(() => [
     variablesRef,
     ignoreElement,
     ...(scope?.x ?? []),
     ...(scope?.y ?? []),
-  ];
+  ], [variablesRef, ignoreElement, scope]);
 
   const addBlockingEvents = React.useCallback(
     (events: string[]) => {
@@ -116,7 +115,7 @@ const useSwipe: UseSwipe = (target, options) => {
 
     startPositionRef.current = [clientY, clientX];
     variablesRef.current.touchMoveBlocking = false;
-  }, effectDependencies);
+  }, [targetRef, ...commonEffectDependencies]);
   const throttledSwipeStartHandler = React.useMemo(
     () => throttle(swipeStartHandler, ms),
     [swipeStartHandler, ms],
@@ -140,7 +139,7 @@ const useSwipe: UseSwipe = (target, options) => {
       y: clientY - startY,
       state: 'move',
     });
-  }, effectDependencies);
+  }, commonEffectDependencies);
   const throttledSwipeMoveHandler = React.useMemo(
     () => throttle(swipeMoveHandler, ms),
     [swipeMoveHandler, ms],
@@ -153,7 +152,7 @@ const useSwipe: UseSwipe = (target, options) => {
     setTimeout(() => {
       removeBlockingEvents(['click', 'dragstart']);
     }, 0);
-  }, effectDependencies);
+  }, commonEffectDependencies);
 
   const mouseLeaveHandler = React.useCallback(() => {
     setSwipeState(INITIAL_STATE);
@@ -167,12 +166,12 @@ const useSwipe: UseSwipe = (target, options) => {
         throttledSwipeStartHandler,
         { passive: true },
       );
-      targetRef.current.addEventListener(
+      document.body.addEventListener(
         eventMapOfDevice.MOVE,
         throttledSwipeMoveHandler,
         { passive: true },
       );
-      targetRef.current.addEventListener(
+      document.body.addEventListener(
         eventMapOfDevice.END,
         swipeEndHandler,
         { passive: true },
