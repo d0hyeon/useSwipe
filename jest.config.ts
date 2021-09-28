@@ -26,7 +26,9 @@ export default {
   globals: {
     "ts-jest": {
       babelConfig: true,
-      diagnostics: false
+      diagnostics: {
+        warnOnly: true
+      }
     }
   },
 
