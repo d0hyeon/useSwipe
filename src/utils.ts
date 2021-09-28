@@ -1,8 +1,14 @@
 import { DeviceEventType, MobileEventEnum, DesktopEventEnum } from './type';
 
 type GetIsMobile = () => boolean;
+interface Process extends NodeJS.Process {
+  browser: boolean;
+}
+
+declare const process: Process
+
 export const getIsMobile: GetIsMobile = () => {
-  if(!(process as any).browser) {
+  if(!process.browser) {
     return false;
   }
   return /iPhone|iPad|iPod|Android/i.test(navigator?.userAgent ?? '');
