@@ -1,4 +1,4 @@
-import { DeviceEventType, MobileEventEnum, DesktopEventEnum } from './type';
+import { DeviceEventType, MobileEventEnum, DesktopEventEnum, SwipeEvent } from './type';
 
 type GetIsMobile = () => boolean;
 interface Process extends NodeJS.Process {
@@ -13,15 +13,6 @@ export const getIsMobile: GetIsMobile = () => {
   }
   return /iPhone|iPad|iPod|Android/i.test(navigator?.userAgent ?? '');
 }
-
-type getAbsolutePositionFunc = (element: HTMLElement) => (position: 'x' | 'y') => number;
-export const getAbsolutePositionFunc: getAbsolutePositionFunc = (element) => (position) => {
-  return (
-    (window[`scroll${position.toUpperCase()}`] ?? 0) +
-    (element.getBoundingClientRect()[position] ?? 0)
-  );
-};
-
 
 type GetEventNameByDevice = (isMobile: boolean) => DeviceEventType;
 export const getEventNameByDevice: GetEventNameByDevice = (isMobile) => {
@@ -42,4 +33,26 @@ export const getEventNameByDevice: GetEventNameByDevice = (isMobile) => {
 type PreventDefault = (event: Event) => void;
 export const preventDefault:PreventDefault = event => {
   event.preventDefault();
+}
+
+export const addBlockingEvents = <T extends HTMLElement>(element: T, eventNames: string[]) => {
+  eventNames.forEach((eventName) => {
+    element.addEventListener(eventName, preventDefault);
+  })
+}
+
+export const removeBlockingEvents = <T extends HTMLElement>(element: T, eventNames: string[]) => {
+  eventNames.forEach((eventName) => {
+    element.removeEventListener(eventName, preventDefault);
+  })
+}
+
+export const normalizeEvent = (event: MouseEvent | TouchEvent): SwipeEvent => {
+  if('targetTouches' in event) {
+    const { screenX, screenY, target } = event.targetTouches[0];
+
+    return { target, x: screenX, y: screenY }
+  }
+  const { target, clientX, clientY } = event;
+  return { target, x: clientX, y: clientY };
 }
