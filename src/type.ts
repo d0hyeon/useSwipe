@@ -4,13 +4,14 @@ export type Target<T = HTMLElement> =
 | MutableRefObject<T | null>
 | HTMLElement;
 
+export interface SwipeEvent {
+  target: EventTarget;
+  x: number;
+  y: number;
+}
+
 export interface UseSwipeOption {
-  scope?: {
-    y?: [number, number?];
-    x?: [number, number?];
-  };
   fps?: number;
-  ignoreElement?: HTMLElement | string;
 }
 
 export interface SwipeState {
