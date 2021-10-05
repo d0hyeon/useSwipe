@@ -16,17 +16,15 @@ npm install @odnh/use-swipe
 ```
 
 ### parameters
-|Name|Type|Description|
-|-----|-----------|---------------|
-|target|`HTMLElement` or `React.MutableRefObject<HTMLElement>`|target element|
-|option|`Object`|[Options](https://github.com/d0hyeon/useSwipe/blob/master/README.md#options)|
+|Name|Type|Description|Required|
+|-----|-----------|---------------|-----|
+|target|`HTMLElement` or `React.MutableRefObject<HTMLElement>`|target element|`true`|
+|option|`Object`|[Options](https://github.com/d0hyeon/useSwipe/blob/master/README.md#options)|`false`|
 
 #### options 
-|Name|type|Description|
-|-----|--------|---------------------------|
-|scope|`{y: [number, number?], x: [number, number?]}`|Allowable touch range|
-|fps|`number`|-|
-|ignoreElement|`string` or `HTMLElement`|Elements to exclude touch|
+|Name|type|Description|Default value|
+|-----|--------|---------------------------|----|
+|fps|`number`|-|60|
 
 
 ---
