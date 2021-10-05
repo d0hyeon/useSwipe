@@ -1,6 +1,6 @@
 {
   "name": "@odnh/use-swipe",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "react hook useSwipe",
   "keywords": [
     "react",
@@ -9,7 +9,7 @@
     "use swipe"
   ],
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "module": "dist/index.js",
   "license": "MIT",
   "private": false,
   "repository": {
