@@ -8,3 +8,5 @@ jest.config.ts
 rollup.config.js
 tsconfig.json
 yarn.lock
+yarn-error.log
+package-lock.json
