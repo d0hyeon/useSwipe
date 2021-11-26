@@ -65,7 +65,6 @@ const useSwipe: UseSwipe = <T extends HTMLElement, EL extends HTMLElement>(
       dateTime: now
     };
     variablesRef.current.isActiveInput = false;
-    console.log(useEvent)
     if(useEvent) {
       const swipeEvent = new CustomEvent<SwipeEvent>('swipestart', {
         detail: swipe
