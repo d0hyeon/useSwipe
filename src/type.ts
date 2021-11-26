@@ -10,17 +10,30 @@ export interface SwipeEvent {
   y: number;
 }
 
-export interface UseSwipeOption {
+export interface UseSwipeOption<EE> {
   fps?: number;
+  useEvent?: boolean,
+  excludeElement?: EE;
+}
+
+export enum SwipeStateEnum {
+  DONE = 'done',
+  MOVE = 'move'
 }
 
 export interface SwipeState {
   x: number;
   y: number;
-  state: 'done' | 'move';
+  state: SwipeStateEnum;
+  duration: number;
+  difference: {
+    x: number;
+    y: number;
+  }
 }
 
-export type UseSwipe = (target: Target, options?: UseSwipeOption) => SwipeState;
+export type UseSwipe<T = HTMLElement, EE = HTMLElement> = 
+  (target: Target<T>, options?: UseSwipeOption<EE>) => SwipeState;
 
 export enum MobileEventEnum {
   START = 'touchstart',

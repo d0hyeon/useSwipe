@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useCallback, MutableRefObject, useEffect, useLayoutEffect, RefObject } from 'react';
 import { throttle } from 'lodash-es';
-import { SwipeState, DeviceEventType, UseSwipeOption } from './type';
+import { SwipeState, DeviceEventType, UseSwipeOption, SwipeEvent, SwipeStateEnum, UseSwipe } from './type';
 import {
   getEventNameByDevice,
   getIsMobile,
@@ -12,69 +12,140 @@ import {
 const INITIAL_STATE: SwipeState = {
   x: 0,
   y: 0,
-  state: 'done',
+  state: SwipeStateEnum.DONE,
+  duration: 0,
+  difference: {
+    x: 0,
+    y: 0
+  }
 };
 
-const useSwipe = <T extends HTMLElement>(target: T | RefObject<T>, options?: UseSwipeOption): SwipeState => {
-  const { fps = 60 } = options || {};
+interface StartRecord {
+  position: [number, number];
+  dateTime: number
+}
+
+const INITIAL_START_RECORD: StartRecord = {
+  position: [0, 0],
+  dateTime: 0
+}
+
+const useSwipe: UseSwipe = <T extends HTMLElement, EL extends HTMLElement>(
+  target: T | RefObject<T>, 
+  options?: UseSwipeOption<EL>
+): SwipeState => {
+  const { fps = 60, useEvent = false, excludeElement } = options || {};
   const ms = useMemo(() => 1000 / fps, [fps]);
 
   const [swipeState, setSwipeState] = useState<SwipeState>(INITIAL_STATE);
-  const startPositionRef = useRef([0, 0]);
   const targetRef: MutableRefObject<T | null> = useRef(null);
-  const variablesRef = useRef({ touchMoveBlocking: true });
+  const variablesRef = useRef<{ isActiveInput: boolean, startRecord: StartRecord }>({ isActiveInput: true, startRecord: INITIAL_START_RECORD });
   const isMobile = useMemo(() => getIsMobile(), []);
   const eventMapOfDevice = useMemo<DeviceEventType>(
     () => getEventNameByDevice(isMobile),
     [isMobile],
   );
     
-  const commonEffectDependencies = useMemo(() => [
+  const commonEffectDependencies = useMemo(() => ([
     targetRef,
     variablesRef,
-  ], [targetRef, variablesRef]);
+  ]), [targetRef, variablesRef]);
   
   const swipeStartHandler = useCallback((event) => {
+    if(excludeElement) {
+      const { target } = event;
+      if(excludeElement === target || excludeElement.contains(target)) {
+        return 
+      }
+    }
     const swipe = normalizeEvent(event);
+    const now = performance?.now?.() ?? Date.now()
+    variablesRef.current.startRecord = {
+      position: [swipe.y, swipe.x],
+      dateTime: now
+    };
+    variablesRef.current.isActiveInput = false;
+    console.log(useEvent)
+    if(useEvent) {
+      const swipeEvent = new CustomEvent<SwipeEvent>('swipestart', {
+        detail: swipe
+      })
+      targetRef.current.dispatchEvent(swipeEvent)
+    }
+    setSwipeState(INITIAL_STATE);
+  }, [...commonEffectDependencies, useEvent, excludeElement, setSwipeState]);
 
-    startPositionRef.current = [swipe.y, swipe.x];
-    variablesRef.current.touchMoveBlocking = false;
-  }, [startPositionRef, variablesRef]);
   const throttledSwipeStartHandler = useMemo(
     () => throttle(swipeStartHandler, ms),
     [swipeStartHandler, ms],
   );
 
   const swipeMoveHandler = useCallback((event) => {
-    if (variablesRef.current.touchMoveBlocking) return;
-    const { x, y } = normalizeEvent(event);
-    const [ startY, startX ] = startPositionRef.current;
+    if (variablesRef.current.isActiveInput) return;
+    const swipe = normalizeEvent(event);
+    const { x, y } = swipe;
+    const [ startY, startX ] = variablesRef.current.startRecord.position;
     const [ diffY, diffX ] = [y - startY, x - startX];
+
+    if(useEvent) {
+      const swipeEvent = new CustomEvent('swipemove', {
+        detail: swipe
+      })
+      targetRef.current.dispatchEvent(swipeEvent)
+    }
 
     addBlockingEvents(targetRef!.current, ['click', 'dragstart']);
     setSwipeState({
+      duration: 0,
+      difference: { x: 0, y: 0},
       x: diffX,
       y: diffY,
-      state: 'move',
+      state: SwipeStateEnum.MOVE,
     });
-  }, [variablesRef, startPositionRef, setSwipeState]);
+  }, [...commonEffectDependencies, setSwipeState, useEvent]);
   const throttledSwipeMoveHandler = useMemo(
     () => throttle(swipeMoveHandler, ms),
     [swipeMoveHandler, ms],
   );
 
-  const swipeEndHandler = useCallback(() => {
-    variablesRef.current.touchMoveBlocking = true;
-    startPositionRef.current = [0, 0];
-    setSwipeState(INITIAL_STATE);
+  const swipeEndHandler = useCallback((event) => {
+    if (variablesRef.current.isActiveInput) return;
+    const swipe = normalizeEvent(event)
+    const { x, y } = swipe;
+    const { position: [startY, startX], dateTime } = variablesRef.current.startRecord
+    const [ diffY, diffX ] = [y - startY, x - startX];
+    const now = performance?.now?.() ?? Date.now()
+
+    variablesRef.current.isActiveInput = true;
+    variablesRef.current.startRecord = INITIAL_START_RECORD
+
     setTimeout(() => {
       removeBlockingEvents(targetRef!.current, ['click', 'dragstart']);
     }, 0);
-  }, commonEffectDependencies);
+    
+    if(useEvent) {
+      const swipeEvent = new CustomEvent<SwipeEvent>('swipeend', {
+        detail: swipe
+      })
+      targetRef.current.dispatchEvent(swipeEvent)
+    }
+    setSwipeState((prevState) => (
+      prevState.state === SwipeStateEnum.DONE
+        ? prevState
+        : {
+          ...INITIAL_STATE,
+          duration: now - dateTime,
+          difference: {
+            x: diffX,
+            y: diffY
+          }
+        }
+    ));
+  }, [...commonEffectDependencies, setSwipeState, useEvent]);
 
-  const mouseLeaveHandler = useCallback(() => {
+  const mouseLeaveHandler = useCallback((event) => {
     setSwipeState(INITIAL_STATE);
-    swipeEndHandler();
+    swipeEndHandler(event);
   }, [targetRef, swipeEndHandler]);
 
   useEffect(() => {

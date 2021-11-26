@@ -25,14 +25,24 @@ npm install @odnh/use-swipe
 |Name|type|Description|Default value|
 |-----|--------|---------------------------|----|
 |fps|`number`|-|60|
+|useEvent|`boolean`|Whether to use the swipe event [`swipestart` - `swipemove` - `swipeend`].|`false`|
+|excludeElement|`HTMLElement`|Elements to exclude the beginning.|`null`|
 
 
 ---
 ### returns
-
 |Name|Type|Description|
 |-----|-----------|---------------|
-|swipeState|`Object`| position `x`, `y` and state (`done` or `move`)|
+|swipeState|`SwipeState`| [SwipeState](https://github.com/d0hyeon/useSwipe/blob/master/README.md#SwipeState) |
+<br />
+#### SwipeState
+|Name|Type|Description|
+|-----|------|-------|
+|state|`done` or `move`| - |
+|x|number|moving position value|
+|y|number|moving position value|
+|difference|`{x: number, y: number}`|position difference between the beginning and the end.|
+|duration|number|time of moved|
 
 <br/> 
 
