@@ -35,6 +35,7 @@ npm install @odnh/use-swipe
 |-----|-----------|---------------|
 |swipeState|`SwipeState`| [SwipeState](https://github.com/d0hyeon/useSwipe/blob/master/README.md#SwipeState) |
 <br />
+
 #### SwipeState
 |Name|Type|Description|
 |-----|------|-------|
