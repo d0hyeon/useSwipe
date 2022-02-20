@@ -63,7 +63,7 @@ npm install @odnh/use-swipe
 
 ```jsx
 import React from 'react';
-import useSwipe from '@odnh/use-swipe';
+import useSwipe, { SwipeStateEnum } from '@odnh/use-swipe';
 
 const DEFAULT_STYLE = {
   width: '100px',
@@ -74,19 +74,20 @@ const DEFAULT_STYLE = {
 };
 const App = () => {
   const elementRef = React.useRef(null);
-  const {x, y, state} = useSwipe(elementRef);
+  const swipe = useSwipe(elementRef);
   
   const swipeStyle = React.useMemo(() => {
-    if(state === 'done') {
+    if(state === SwipeStateEnum.DONE) {
       return DEFAULT_STYLE;
     } else {
+      const { x, y } = swipe
       return {
         ...DEFAULT_STYLE,
         transform: `translate(${x}px, ${y}px)`,
         transition: 'transform 100ms'
       }
     }
-  }, [state, x, y]);
+  }, [swipe]);
   
   return (
     <div ref={elementRef} style={{width: '100vw', height: '100vh'}}>
