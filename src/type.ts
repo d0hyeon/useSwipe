@@ -21,16 +21,28 @@ export enum SwipeStateEnum {
   MOVE = 'move'
 }
 
-export interface SwipeState {
-  x: number;
-  y: number;
-  state: SwipeStateEnum;
+export interface SwipeDoneState {
+  state: SwipeStateEnum.DONE;
   duration: number;
   difference: {
     x: number;
     y: number;
   }
+  x: 0;
+  y: 0;
 }
+
+export interface SwipeMoveState {
+  state: SwipeStateEnum.MOVE;
+  x: number;
+  y: number;
+  duration: 0;
+  difference: {
+    x: 0;
+    y: 0;
+  }
+}
+export type SwipeState = SwipeMoveState | SwipeDoneState
 
 export type UseSwipe<T = HTMLElement, EE = HTMLElement> = 
   (target: Target<T>, options?: UseSwipeOption<EE>) => SwipeState;
