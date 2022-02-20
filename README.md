@@ -12,10 +12,10 @@ npm install @odnh/use-swipe
 
 ## Use
 ```tsx
-  useSwipe(target: Target, options: Options) => SwipeState;
+  useSwipe(target: Target, options: Options) => SwipeMoveState | SwipeDoneState;
 ```
 
-### parameters
+### Parameters
 |Name|Type|Description|Required|
 |-----|-----------|---------------|-----|
 |target|`HTMLElement` or `React.MutableRefObject<HTMLElement>`|target element|`true`|
@@ -30,7 +30,7 @@ npm install @odnh/use-swipe
 
 
 ---
-### returns
+### Returns
 |Name|Type|Description|
 |-----|-----------|---------------|
 |swipeState|`SwipeMoveState` or `SwipeDoneState`| |
