@@ -33,18 +33,26 @@ npm install @odnh/use-swipe
 ### returns
 |Name|Type|Description|
 |-----|-----------|---------------|
-|swipeState|`SwipeState`| [SwipeState](https://github.com/d0hyeon/useSwipe/blob/master/README.md#SwipeState) |
+|swipeState|`SwipeMoveState` or `SwipeDoneState`| |
 <br />
 
-#### SwipeState
+##### SwipeMoveState
 |Name|Type|Description|
-|-----|------|-------|
-|state|`done` or `move`| - |
-|x|number|moving position value|
-|y|number|moving position value|
+|-----|----------|-----------|
+|state|`SwipeStateEnum.MOVE`| move |
+|x|`number`|moving position value|
+|y|`number`|moving position value|
+|difference|`{x: 0, y: 0}`|position difference between the beginning and the end.|
+|duration|`0`|time of moved|
+<br/>
+##### SwipeDoneState
+|Name|Type|Description|
+|-----|----------|-----------|
+|state|`SwipeStateEnum.DONE`| done |
+|x|`0`|moving position value|
+|y|`0`|moving position value|
 |difference|`{x: number, y: number}`|position difference between the beginning and the end.|
-|duration|number|time of moved|
-
+|duration|`number`|time of moved|
 <br/> 
 
 ## Example
