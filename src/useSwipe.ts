@@ -45,11 +45,6 @@ const useSwipe: UseSwipe = <T extends HTMLElement, EL extends HTMLElement>(
     () => getEventNameByDevice(isMobile),
     [isMobile],
   );
-    
-  const commonEffectDependencies = useMemo(() => ([
-    targetRef,
-    variablesRef,
-  ]), [targetRef, variablesRef]);
   
   const swipeStartHandler = useCallback((event) => {
     if(excludeElement) {
@@ -72,7 +67,7 @@ const useSwipe: UseSwipe = <T extends HTMLElement, EL extends HTMLElement>(
       targetRef.current.dispatchEvent(swipeEvent)
     }
     setSwipeState(INITIAL_STATE);
-  }, [...commonEffectDependencies, useEvent, excludeElement, setSwipeState]);
+  }, [targetRef, variablesRef, useEvent, excludeElement, setSwipeState]);
 
   const throttledSwipeStartHandler = useMemo(
     () => throttle(swipeStartHandler, ms),
@@ -101,7 +96,7 @@ const useSwipe: UseSwipe = <T extends HTMLElement, EL extends HTMLElement>(
       y: diffY,
       state: SwipeStateEnum.MOVE,
     });
-  }, [...commonEffectDependencies, setSwipeState, useEvent]);
+  }, [targetRef, variablesRef, setSwipeState, useEvent]);
   const throttledSwipeMoveHandler = useMemo(
     () => throttle(swipeMoveHandler, ms),
     [swipeMoveHandler, ms],
@@ -140,7 +135,7 @@ const useSwipe: UseSwipe = <T extends HTMLElement, EL extends HTMLElement>(
           }
         }
     ));
-  }, [...commonEffectDependencies, setSwipeState, useEvent]);
+  }, [targetRef, variablesRef, setSwipeState, useEvent]);
 
   const mouseLeaveHandler = useCallback((event) => {
     setSwipeState(INITIAL_STATE);
