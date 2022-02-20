@@ -44,7 +44,9 @@ npm install @odnh/use-swipe
 |y|`number`|moving position value|
 |difference|`{x: 0, y: 0}`|position difference between the beginning and the end.|
 |duration|`0`|time of moved|
+
 <br/>
+
 ##### SwipeDoneState
 |Name|Type|Description|
 |-----|----------|-----------|
